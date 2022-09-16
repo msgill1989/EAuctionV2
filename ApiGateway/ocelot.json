@@ -1,0 +1,80 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/e-auction/api/v1/Buyer/place-bid",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "POST",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7163"
+        }
+      ],
+      "UpstreamPathTemplate": "/Buyer/place-bid",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      //https://locathost:7163/api/values
+
+      "DownstreamPathTemplate": "/e-auction/api/v1/Buyer/update-bid",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "PATCH",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7163"
+        }
+      ],
+      "UpstreamPathTemplate": "/Buyer/update-bid",
+      "UpstreamHttpMethod": [ "PATCH" ]
+    },
+    {
+      "DownstreamPathTemplate": "/e-auction/api/v1/Seller/add-product",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "POST",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7164"
+        }
+      ],
+      "UpstreamPathTemplate": "/Seller/add-product",
+      "UpstreamHttpMethod": [ "Post" ]
+
+    },
+    {
+      "DownstreamPathTemplate": "/e-auction/api/v1/Seller/delete",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "DELETE",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7164"
+        }
+      ],
+      "UpstreamPathTemplate": "/Seller/delete",
+      "UpstreamHttpMethod": [ "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/e-auction/api/v1/Seller/show-bids",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "GET",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7164"
+        }
+      ],
+      "UpstreamPathTemplate": "/Seller/show-bids",
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7254"
+  }
+}
