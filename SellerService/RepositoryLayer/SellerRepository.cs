@@ -58,7 +58,7 @@ namespace SellerService.RepositoryLayer
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogError("The product with product id {0} cannot be deleted because bid end date has already passed.", productId);
+                _logger.LogError(ex, "The product with product id {0} cannot be deleted because bid end date has already passed.", productId);
                 throw;
             }
             catch (Exception ex)

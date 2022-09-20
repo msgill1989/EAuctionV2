@@ -8,8 +8,8 @@ namespace BuyerService.Models
     public class BidDetails
     {
         public Double BidAmount { get; set; }
-        public string BuyerFName { get; set; }
-        public string Email { get; set; }
+        public string? BuyerFName { get; set; }
+        public string? Email { get; set; }
         public int Mobile { get; set; }
     }
 }

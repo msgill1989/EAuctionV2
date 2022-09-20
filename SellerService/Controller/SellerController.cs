@@ -30,7 +30,7 @@ namespace AuthServer.Controller
             try
             {
                 await _sellerRepository.AddProductAsync(productToAdd);
-                return new AddProductSuccessResponse { ProductId = productToAdd.Id, Message = GlobalVariables.AddProductSuccessMsg };
+                return new AddProductSuccessResponse { ProductId = productToAdd.Id ?? "", Message = GlobalVariables.AddProductSuccessMsg };
 
             }
             catch (Exception ex)

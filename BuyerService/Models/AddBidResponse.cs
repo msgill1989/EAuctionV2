@@ -7,7 +7,7 @@ namespace BuyerService.Models
 {
     public class AddBidResponse
     {
-        public string BidId { get; set; }
-        public string Message { get; set; }
+        public string? BidId { get; set; }
+        public string? Message { get; set; }
     }
 }

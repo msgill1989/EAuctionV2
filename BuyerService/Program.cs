@@ -1,5 +1,3 @@
-using BuyerService.BusinessLayer.Interfaces;
-using BuyerService.BusinessLayer;
 using BuyerService.RepositoryLayer.Interfaces;
 using BuyerService.RepositoryLayer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BuyerService.Models;
 using Microsoft.Extensions.Configuration;
+using BuyerService.Data.Interfaces;
+using BuyerService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +30,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddTransient<IBuyerBusinessLogic, BuyerBusinessLogic>();
+builder.Services.AddScoped<IBuyerContext, BuyerContext>();
 builder.Services.AddTransient<IBuyerRepository, BuyerRepository>();
-builder.Services.Configure<EAuctionDatabaseSettings>(builder.Configuration.GetSection("EAuctionDatabase"));
 builder.Services.AddControllers();
 
 builder.Services.AddAuthorization();

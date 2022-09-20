@@ -9,9 +9,6 @@ namespace BuyerService.RepositoryLayer.Interfaces
     public interface IBuyerRepository
     {
         Task AddBid(BidAndBuyer bidDetails);
-        Task UpdateBid(string productId, string buyerEmailId, double bidAmount);
-        Task<BidAndBuyer> GetBidDetails(string productId, string bidderEmailId = null);
-        public List<BidAndBuyer> GetAllBidsForProductId(string productId);
-        BidAndBuyer GetBidDetailsByBidId(string bidId);
+        Task<bool> UpdateBid(string productId, string buyerEmailId, double bidAmount);
     }
 }

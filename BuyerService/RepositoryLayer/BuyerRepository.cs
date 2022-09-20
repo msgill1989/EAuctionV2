@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BuyerService.Data.Interfaces;
 using BuyerService.Models;
 using BuyerService.RepositoryLayer.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -13,38 +14,49 @@ namespace BuyerService.RepositoryLayer
     public class BuyerRepository : IBuyerRepository
     {
         private readonly ILogger<BuyerRepository> _logger;
-        private readonly IOptions<EAuctionDatabaseSettings> _dbSettings;
-        private readonly IMongoCollection<BidAndBuyer> _bidCollections;
-        public BuyerRepository(ILogger<BuyerRepository> logger, IOptions<EAuctionDatabaseSettings> DBSettings)
+        private readonly IBuyerContext _context;
+        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context)
         {
             _logger = logger;
-            _dbSettings = DBSettings;
-
-            var mongoClient = new MongoClient(_dbSettings.Value.ConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(_dbSettings.Value.DatabaseName);
-
-            _bidCollections = mongoDatabase.GetCollection<BidAndBuyer>
-                (_dbSettings.Value.BuyerCollectionName);
+            _context = context;
         }
         public async Task AddBid(BidAndBuyer bidDetails)
         {
             try
             {
-                await _bidCollections.InsertOneAsync(bidDetails);
-            }
-            catch (Exception)
-            {
+                //If bid is placed after bid end date. Throw an exception
 
+                //Check if the same user has already placed a bid
+                BidAndBuyer existingBid = await GetBidDetails(bidDetails.ProductId, bidDetails.Email);
+                if (existingBid != null)
+                    throw new KeyNotFoundException("This buyer has already placed bid for this product.");
+
+
+                await _context.Buyers.InsertOneAsync(bidDetails);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Some error happened while adding the bid details to DB");
                 throw;
             }
         }
-        public async Task UpdateBid(string productId, string buyerEmailId, double bidAmount)
+        public async Task<bool> UpdateBid(string productId, string buyerEmailId, double bidAmount)
         {
             try
             {
-                var earlierBidDetails = await _bidCollections.Find(x => x.ProductId == productId && x.Email == buyerEmailId).FirstOrDefaultAsync();
+                //If bid Amount is updated after the bid end date throw exception. 
+
+                var earlierBidDetails = await _context.Buyers.Find(x => x.ProductId == productId && x.Email == buyerEmailId).FirstOrDefaultAsync();
                 earlierBidDetails.BidAmount = bidAmount;
-                await _bidCollections.ReplaceOneAsync(y => y.ProductId == productId && y.Email == buyerEmailId, earlierBidDetails);
+                var updateResult = await _context.Buyers.ReplaceOneAsync(y => y.ProductId == productId && y.Email == buyerEmailId, earlierBidDetails);
+
+                return updateResult.IsAcknowledged
+                    && updateResult.ModifiedCount > 0;
             }
             catch (Exception)
             {
@@ -52,47 +64,21 @@ namespace BuyerService.RepositoryLayer
                 throw;
             }
         }
-        public async Task<BidAndBuyer> GetBidDetails(string productId, string bidderEmailId = null)
+
+        private async Task<BidAndBuyer> GetBidDetails(string? productId, string? bidderEmailId = null)
         {
             try
             {
                 BidAndBuyer bidDetails;
                 if (bidderEmailId == null)
                 {
-                    bidDetails = _bidCollections.Find(x => x.ProductId == productId).FirstOrDefault();
+                    bidDetails = await _context.Buyers.Find(x => x.ProductId == productId).FirstOrDefaultAsync();
                 }
                 else
                 {
-                    bidDetails = _bidCollections.Find(x => x.Email == bidderEmailId && x.ProductId == productId).FirstOrDefault();
+                    bidDetails = await _context.Buyers.Find(x => x.Email == bidderEmailId && x.ProductId == productId).FirstOrDefaultAsync();
                 }
                 return bidDetails;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public List<BidAndBuyer> GetAllBidsForProductId(string productId)
-        {
-            try
-            {
-                List<BidAndBuyer> allBids;
-                allBids = _bidCollections.Find(X => X.ProductId == productId).SortByDescending(Y => Y.BidAmount).ToList();
-                return allBids;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-        public BidAndBuyer GetBidDetailsByBidId(string bidId)
-        {
-            try
-            {
-                return _bidCollections.Find(x => x.Id == bidId).FirstOrDefault();
             }
             catch (Exception)
             {

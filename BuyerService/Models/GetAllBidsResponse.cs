@@ -8,7 +8,7 @@ namespace BuyerService.Models
     public class GetAllBidsResponse
     {
         private List<BidDetails> bids = new List<BidDetails>();
-        public string ProductId { get; set; }
+        public string? ProductId { get; set; }
         public List<BidDetails> Bids 
         {
             set { bids = value; }
