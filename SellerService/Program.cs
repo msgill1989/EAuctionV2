@@ -1,8 +1,8 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using SellerService.BusinessLayer;
-using SellerService.BusinessLayer.Interfaces;
+using SellerService.Data;
+using SellerService.Data.Interfaces;
 using SellerService.Models;
 using SellerService.RepositoryLayer;
 using SellerService.RepositoryLayer.Interfaces;
@@ -30,9 +30,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddTransient<ISellerBusinessLogic, SellerBusinessLogic>();
 builder.Services.AddTransient<ISellerRepository, SellerRepository>();
-builder.Services.Configure<EAuctionDatabaseSettings>(builder.Configuration.GetSection("EAuctionDatabase"));
+builder.Services.AddScoped<ISellerContext, SellerContext>();
+//builder.Services.Configure<EAuctionDatabaseSettings>(builder.Configuration.GetSection("EAuctionDatabase"));
 builder.Services.AddControllers();
 
 builder.Services.AddAuthorization();

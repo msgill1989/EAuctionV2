@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BusinessLayer\" />
     <Folder Include="CustomValidators\" />
     <Folder Include="Enums\" />
     <Folder Include="Models\" />
