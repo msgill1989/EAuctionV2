@@ -93,6 +93,23 @@ namespace SellerService.RepositoryLayer
             }
         }
 
+        public async Task<BidDateResponse> GetBidDateByProductId(string productId)
+        {
+            BidDateResponse bidDateResponse = new BidDateResponse();    
+            var productDetails = await GetProductByProductIdAsync(productId);
+            if (productDetails != null)
+            {
+                bidDateResponse.ProductId = productDetails.Id;
+                bidDateResponse.BidDate = productDetails.BidEndDate;
+            } 
+            else
+            {
+                bidDateResponse.ProductId = productId;
+                bidDateResponse.BidDate = null;
+            }
+            return bidDateResponse;
+        }
+
         private async Task<ProductAndSeller> GetProductByProductIdAsync(string productId)
         {
             try

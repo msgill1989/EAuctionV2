@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using BuyerService.Data.Interfaces;
 using BuyerService.Models;
 using BuyerService.RepositoryLayer.Interfaces;
+using EventBus.Messages.Events;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -15,16 +17,20 @@ namespace BuyerService.RepositoryLayer
     {
         private readonly ILogger<BuyerRepository> _logger;
         private readonly IBuyerContext _context;
-        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context)
+        private readonly IPublishEndpoint _publishEndpoint;
+        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context, IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
             _context = context;
+            _publishEndpoint = publishEndpoint;
         }
         public async Task AddBid(BidAndBuyer bidDetails)
         {
             try
             {
                 //If bid is placed after bid end date. Throw an exception
+                GetBidDateRequestEvent eventMessage = new GetBidDateRequestEvent() { ProductId = bidDetails.ProductId };
+                await _publishEndpoint.Publish(eventMessage);
 
                 //Check if the same user has already placed a bid
                 BidAndBuyer existingBid = await GetBidDetails(bidDetails.ProductId, bidDetails.Email);

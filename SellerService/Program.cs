@@ -1,8 +1,11 @@
 
+using EventBus.Messages.Common;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SellerService.Data;
 using SellerService.Data.Interfaces;
+using SellerService.EventBusConsumer;
 using SellerService.Models;
 using SellerService.RepositoryLayer;
 using SellerService.RepositoryLayer.Interfaces;
@@ -32,7 +35,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddTransient<ISellerRepository, SellerRepository>();
 builder.Services.AddScoped<ISellerContext, SellerContext>();
-//builder.Services.Configure<EAuctionDatabaseSettings>(builder.Configuration.GetSection("EAuctionDatabase"));
+
+//Masstransit-RabbitMQ Configuration
+builder.Services.AddMassTransit(config => {
+    config.AddConsumer<BidDateConsumer>();
+    config.UsingRabbitMq((ctx, cfg) => {
+        cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+
+        cfg.ReceiveEndpoint(EventBusConstants.GetBidEndDateQueue, c =>
+        {
+            c.ConfigureConsumer<BidDateConsumer>(ctx);
+        });
+    });
+});
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddControllers();
 
 builder.Services.AddAuthorization();

@@ -7,6 +7,7 @@ using BuyerService.Models;
 using Microsoft.Extensions.Configuration;
 using BuyerService.Data.Interfaces;
 using BuyerService.Data;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,8 +33,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<IBuyerContext, BuyerContext>();
 builder.Services.AddTransient<IBuyerRepository, BuyerRepository>();
-builder.Services.AddControllers();
 
+//Masstransit-RabbitMQ Configuration
+builder.Services.AddMassTransit(config => {
+config.UsingRabbitMq((ctx, cfg) => {
+    cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+});
+});
+
+builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
