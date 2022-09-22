@@ -17,12 +17,14 @@ namespace BuyerService.RepositoryLayer
     {
         private readonly ILogger<BuyerRepository> _logger;
         private readonly IBuyerContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context, IPublishEndpoint publishEndpoint)
+        //private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IRequestClient<GetBidDateRequestEvent> _client;
+        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context, IRequestClient<GetBidDateRequestEvent> client) //, IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
             _context = context;
-            _publishEndpoint = publishEndpoint;
+            //_publishEndpoint = publishEndpoint;
+            _client = client;
         }
         public async Task AddBid(BidAndBuyer bidDetails)
         {
@@ -30,7 +32,11 @@ namespace BuyerService.RepositoryLayer
             {
                 //If bid is placed after bid end date. Throw an exception
                 GetBidDateRequestEvent eventMessage = new GetBidDateRequestEvent() { ProductId = bidDetails.ProductId };
-                await _publishEndpoint.Publish(eventMessage);
+                //var a = await _publishEndpoint.Publish(eventMessage);
+                var result = await _client.GetResponse<GetBidDateResponseEvent>(eventMessage);
+                if (DateTime.Now > result.Message.BidEndDate)
+                    throw new KeyNotFoundException("The Bid cannot be placed after the bid end date.");
+
 
                 //Check if the same user has already placed a bid
                 BidAndBuyer existingBid = await GetBidDetails(bidDetails.ProductId, bidDetails.Email);
@@ -56,6 +62,10 @@ namespace BuyerService.RepositoryLayer
             try
             {
                 //If bid Amount is updated after the bid end date throw exception. 
+                GetBidDateRequestEvent eventMessage = new GetBidDateRequestEvent() { ProductId = productId };
+                var result = await _client.GetResponse<GetBidDateResponseEvent>(eventMessage);
+                if (DateTime.Now > result.Message.BidEndDate)
+                    throw new KeyNotFoundException("The Bid amount cannot be updated after Bid end date.");
 
                 var earlierBidDetails = await _context.Buyers.Find(x => x.ProductId == productId && x.Email == buyerEmailId).FirstOrDefaultAsync();
                 earlierBidDetails.BidAmount = bidAmount;
@@ -63,6 +73,19 @@ namespace BuyerService.RepositoryLayer
 
                 return updateResult.IsAcknowledged
                     && updateResult.ModifiedCount > 0;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<BidAndBuyer>> GetAllBidsByProductId(string? productId)
+        {
+            try
+            {
+                return await _context.Buyers.Find(x => x.Id == productId).ToListAsync();
             }
             catch (Exception)
             {

@@ -82,7 +82,9 @@ namespace SellerService.RepositoryLayer
                 getAllBidsResponse.Category = productDetails.ProductCategory;
                 getAllBidsResponse.BidEndDate = productDetails.BidEndDate;
 
-                //Get all the bids using Kafka
+                //Get all the bids using RabbitMq
+
+
 
                 return getAllBidsResponse;
             }
@@ -100,12 +102,12 @@ namespace SellerService.RepositoryLayer
             if (productDetails != null)
             {
                 bidDateResponse.ProductId = productDetails.Id;
-                bidDateResponse.BidDate = productDetails.BidEndDate;
+                bidDateResponse.BidEndDate = productDetails.BidEndDate;
             } 
             else
             {
                 bidDateResponse.ProductId = productId;
-                bidDateResponse.BidDate = null;
+                bidDateResponse.BidEndDate = null;
             }
             return bidDateResponse;
         }

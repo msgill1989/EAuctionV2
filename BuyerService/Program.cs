@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using BuyerService.Data.Interfaces;
 using BuyerService.Data;
 using MassTransit;
+using EventBus.Messages.Events;
+using BuyerService.EventBusConsumer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,9 +38,12 @@ builder.Services.AddTransient<IBuyerRepository, BuyerRepository>();
 
 //Masstransit-RabbitMQ Configuration
 builder.Services.AddMassTransit(config => {
-config.UsingRabbitMq((ctx, cfg) => {
+    config.AddConsumer<>(BidDetailsForSellerConsumer);
+    config.UsingRabbitMq((ctx, cfg) => {
     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+    cfg.ConfigureEndpoints(ctx);
 });
+    config.AddRequestClient<GetBidDateRequestEvent>();
 });
 
 builder.Services.AddControllers();

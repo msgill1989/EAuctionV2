@@ -10,5 +10,7 @@ namespace BuyerService.RepositoryLayer.Interfaces
     {
         Task AddBid(BidAndBuyer bidDetails);
         Task<bool> UpdateBid(string productId, string buyerEmailId, double bidAmount);
+
+        Task<List<BidAndBuyer>> GetAllBidsByProductId(string? productId);
     }
 }

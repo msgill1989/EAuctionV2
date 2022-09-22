@@ -37,14 +37,21 @@ builder.Services.AddTransient<ISellerRepository, SellerRepository>();
 builder.Services.AddScoped<ISellerContext, SellerContext>();
 
 //Masstransit-RabbitMQ Configuration
-builder.Services.AddMassTransit(config => {
-    config.AddConsumer<BidDateConsumer>();
-    config.UsingRabbitMq((ctx, cfg) => {
+builder.Services.AddMassTransit(config =>
+{
+    config.AddConsumer<BidDateForInsertBidConsumer>();
+    config.AddConsumer<BidDateForUpdBidAmountConsumer>();
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
         cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
 
-        cfg.ReceiveEndpoint(EventBusConstants.GetBidEndDateQueue, c =>
+        cfg.ReceiveEndpoint(EventBusConstants.GetBidEndDateforInsertBidQueue, c =>
         {
-            c.ConfigureConsumer<BidDateConsumer>(ctx);
+            c.ConfigureConsumer<BidDateForInsertBidConsumer>(ctx);
+        });
+        cfg.ReceiveEndpoint(EventBusConstants.GetBidEndDateforUpdBidAmountQueue, c =>
+        {
+            c.ConfigureConsumer<BidDateForUpdBidAmountConsumer>(ctx);
         });
     });
 });

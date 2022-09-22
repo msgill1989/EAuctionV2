@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace SellerService.Models
+namespace EventBus.Messages.Events
 {
-    public class BidDetails
+    public class GetBidDetailsResponseEvent : IntegrationBaseEvent
+    {
+        public List<Bids>? BidDetails { get; set; }
+    }
+
+    public class Bids
     {
         public string? BidId { get; set; }
         public string? BuyerFName { get; set; }

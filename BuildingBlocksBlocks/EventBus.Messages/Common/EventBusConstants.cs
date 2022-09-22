@@ -8,6 +8,7 @@ namespace EventBus.Messages.Common
 {
     public static class EventBusConstants
     {
-        public const string GetBidEndDateQueue = "getbidenddate-queue";
+        public const string GetBidEndDateforInsertBidQueue = "getbidenddateforinsertbid-queue";
+        public const string GetBidEndDateforUpdBidAmountQueue = "getbidenddateforupdbidamount-queue";
     }
 }

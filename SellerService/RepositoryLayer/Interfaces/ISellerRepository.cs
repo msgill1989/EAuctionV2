@@ -12,6 +12,6 @@ namespace SellerService.RepositoryLayer.Interfaces
         Task<bool> DeleteProductAsync(string productId);
         Task<ShowBidsResponse> GetAllBidDetailsAsync(string productId);
 
-        Task<BidDateResponse> GetBidDateByProductId(string productId);
+        Task<BidDateResponse> GetBidDateByProductId(string? productId);
     }
 }
