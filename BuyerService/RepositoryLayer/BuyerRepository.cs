@@ -81,11 +81,17 @@ namespace BuyerService.RepositoryLayer
             }
         }
 
-        public async Task<List<BidAndBuyer>> GetAllBidsByProductId(string? productId)
+        public async Task<AllBidsForSellerResponse> GetAllBidsByProductId(string? productId)
         {
             try
             {
-                return await _context.Buyers.Find(x => x.Id == productId).ToListAsync();
+                AllBidsForSellerResponse result = new AllBidsForSellerResponse();
+                var response = await _context.Buyers.Find(x => x.ProductId == productId).ToListAsync();
+                foreach (var bid in response)
+                {
+                    result.BidDetails.Add(bid);
+                }
+                return result;
             }
             catch (Exception)
             {

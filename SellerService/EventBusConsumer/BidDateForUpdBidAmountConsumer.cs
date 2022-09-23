@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Confluent.Kafka;
 using EventBus.Messages.Events;
 using MassTransit;
 using SellerService.RepositoryLayer.Interfaces;

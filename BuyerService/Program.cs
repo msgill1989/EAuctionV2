@@ -10,6 +10,7 @@ using BuyerService.Data;
 using MassTransit;
 using EventBus.Messages.Events;
 using BuyerService.EventBusConsumer;
+using EventBus.Messages.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,14 +39,19 @@ builder.Services.AddTransient<IBuyerRepository, BuyerRepository>();
 
 //Masstransit-RabbitMQ Configuration
 builder.Services.AddMassTransit(config => {
-    config.AddConsumer<>(BidDetailsForSellerConsumer);
+    config.AddConsumer<BidDetailsForSellerConsumer>();
     config.UsingRabbitMq((ctx, cfg) => {
     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
     cfg.ConfigureEndpoints(ctx);
+    cfg.ReceiveEndpoint(EventBusConstants.GetBidDetailsQueue, c =>
+    {
+        c.ConfigureConsumer<BidDetailsForSellerConsumer>(ctx);
+    });
 });
     config.AddRequestClient<GetBidDateRequestEvent>();
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 
@@ -59,41 +65,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-//app.MapGet("/GetUsers", [Authorize]() =>
-//{
-//    return new[]
-//    {
-//        "John.Doe",
-//        "Jane.Doe",
-//        "Jewel.Doe",
-//        "Jayden.Doe",
-//    };
-//}).WithName("GetUsers");
-
-
-
-//app.MapGet("/RandomFail", () =>
-//{
-//    var randomValue = new Random().Next(0,2);
-//    //if(randomValue == 1)
-//    {
-//        throw new HttpRequestException("Random Failure");
-//    }
-
-//    //return "SomeData";
-//}).WithName("RandomFail");
-
-//app.MapGet("/RandomTimeout", async () =>
-//{
-//    var randomValue = new Random().Next(0, 2);
-//    //if (randomValue == 1)
-//    {
-//        await Task.Delay(10000);
-//    }
-
-//    //return "SomeData";
-//}).WithName("RandomTimeout");
 
 app.MapControllers();
 app.UseAuthentication();

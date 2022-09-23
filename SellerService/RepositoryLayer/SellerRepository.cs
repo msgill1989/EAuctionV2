@@ -8,18 +8,25 @@ using Microsoft.Extensions.Options;
 using SellerService.Models;
 using MongoDB.Driver;
 using SellerService.Data.Interfaces;
+using MassTransit;
+using EventBus.Messages.Events;
+using AutoMapper;
 
 namespace SellerService.RepositoryLayer
 {
     public class SellerRepository : ISellerRepository
     {
         private readonly ILogger<SellerRepository> _logger;
-        private readonly ISellerContext _context; 
-        
-        public SellerRepository(ILogger<SellerRepository> logger, ISellerContext context)
+        private readonly ISellerContext _context;
+        private readonly IRequestClient<GetBidDetailsRequestEvent> _client;
+        private readonly IMapper _mapper;
+
+        public SellerRepository(ILogger<SellerRepository> logger, ISellerContext context, IRequestClient<GetBidDetailsRequestEvent> client, IMapper mapper)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         public async Task AddProductAsync(ProductAndSeller productObj)
         {
@@ -83,8 +90,16 @@ namespace SellerService.RepositoryLayer
                 getAllBidsResponse.BidEndDate = productDetails.BidEndDate;
 
                 //Get all the bids using RabbitMq
-
-
+                GetBidDetailsRequestEvent eventMessage = new GetBidDetailsRequestEvent() { ProductId = productId };
+                var response = await _client.GetResponse<GetBidDetailsResponseEvent>(eventMessage);
+                if (response.Message.BidDetails.Count > 0)
+                {
+                    var res = _mapper.Map<GetAllBidDetailsResponse>(response.Message);
+                    foreach (var bid in res.BidDetails)
+                    {
+                        getAllBidsResponse.Bids.Add(bid);
+                    }
+                }
 
                 return getAllBidsResponse;
             }

@@ -9,12 +9,17 @@ namespace EventBus.Messages.Events
 {
     public class GetBidDetailsResponseEvent : IntegrationBaseEvent
     {
-        public List<Bids>? BidDetails { get; set; }
-    }
+        public List<Bids> BidDetails
+        {
+            set { bids = value; }
+            get { return bids; }
+        }
 
+        private List<Bids> bids = new();
+    }
     public class Bids
     {
-        public string? BidId { get; set; }
+        public string? Id { get; set; }
         public string? BuyerFName { get; set; }
         public string? BuyerLName { get; set; }
         public string? Address { get; set; }

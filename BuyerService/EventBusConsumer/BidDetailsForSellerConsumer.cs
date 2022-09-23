@@ -20,16 +20,22 @@ namespace BuyerService.EventBusConsumer
 
         public async Task Consume(ConsumeContext<GetBidDetailsRequestEvent> context)
         {
-            var bidDetails = _repository.GetAllBidsByProductId(context.Message.ProductId);
-            if (bidDetails != null)
+            try
             {
-                _logger.LogError("There is no bid present for product with product Id: {0}", context.Message.ProductId);
-                throw new InvalidOperationException("No bid found");
+                var bidDetails = await _repository.GetAllBidsByProductId(context.Message.ProductId);
+                if (bidDetails.BidDetails.Count == 0)
+                {
+                    _logger.LogError("There is no bid present for product with product Id: {0}", context.Message.ProductId);
+                    throw new InvalidOperationException("No bid found");
+                }
+                var bidDetailsResEvent = _mapper.Map<GetBidDetailsResponseEvent>(bidDetails);
+                await context.RespondAsync(bidDetailsResEvent);
             }
-            await context.RespondAsync<GetBidDetailsResponseEvent>(new GetBidDetailsResponseEvent()
+            catch (Exception ex)
             {
-                //Send the list of all Bids
-            });
+                throw;
+            }
+
         }
     }
 }

@@ -7,7 +7,7 @@ namespace SellerService.Models
 {
     public class AddProductSuccessResponse
     {
-        public string ProductId { get; set; }
-        public string Message { get; set; }
+        public string? ProductId { get; set; }
+        public string? Message { get; set; }
     }
 }

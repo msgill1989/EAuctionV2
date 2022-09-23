@@ -7,6 +7,7 @@ namespace SellerService.Models
 {
     public class ShowBidsResponse
     {
+        private List<BidDetails> bids = new();
         public string? ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? ShortDescription { get; set; }
@@ -14,6 +15,10 @@ namespace SellerService.Models
         public string? Category { get; set; }
         public Double StartingPrice { get; set; }
         public DateTime BidEndDate { get; set; }
-        public IEnumerable<BidDetails>? Bids { get; set; }
+        public List<BidDetails> Bids
+        {
+            set { bids = value; }
+            get {return bids; }
+        }
     }
 }

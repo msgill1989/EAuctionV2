@@ -21,12 +21,12 @@ namespace SellerService
         [RegularExpression("[a-zA-Z]{3,30}", ErrorMessage = "Product name should be string and minimum of length 3, maximum of length 30.")]
         public string? ProductName { get; set; }
 
-        public string ProductShortDescription { get; set; }
+        public string? ProductShortDescription { get; set; }
 
-        public string ProductDetailedDescription { get; set; }
+        public string? ProductDetailedDescription { get; set; }
 
         [EnumDataType(typeof(GlobalVariables.ProductCategory), ErrorMessage = "Product category should one of these : Painting, Sculptor, Ornament.")]
-        public string ProductCategory { get; set; }
+        public string? ProductCategory { get; set; }
 
         public double ProductStartingPrice { get; set; }
 
@@ -35,19 +35,19 @@ namespace SellerService
 
         [Required(ErrorMessage = "Seller first name is required.")]
         [RegularExpression("[a-zA-Z]{5,30}", ErrorMessage = "Seller First name should be string and minimum of length 5, maximum of length 30.")]
-        public string SellerFName { get; set; }
+        public string? SellerFName { get; set; }
 
         [Required(ErrorMessage = "Seller last name is required.")]
         [RegularExpression("[a-zA-Z]{3,25}", ErrorMessage = "Seller last name should be string and minimum of length 3, maximum of length 25.")]
-        public string SellerLName { get; set; }
+        public string? SellerLName { get; set; }
 
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
-        public string City { get; set; }
+        public string? City { get; set; }
 
-        public string State { get; set; }
+        public string? State { get; set; }
 
-        public string Pin { get; set; }
+        public string? Pin { get; set; }
 
         [Required(ErrorMessage = "Phone number is reuired.")]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "The phone number should be numeric 10 digits.")]
@@ -55,6 +55,6 @@ namespace SellerService
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Email address should be in proper format.")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
     }
 }

@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace BuyerService.Models
 {
-    public class GetAllBidsResponse
+    public class AllBidsForSellerResponse
     {
-        private List<BidDetails> bids = new List<BidDetails>();
-        public string? ProductId { get; set; }
-        public List<BidDetails> Bids 
+        private List<BidAndBuyer> bids = new List<BidAndBuyer>();
+        public List<BidAndBuyer> BidDetails
         {
             set { bids = value; }
             get { return bids; }

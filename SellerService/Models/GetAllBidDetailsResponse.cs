@@ -7,7 +7,12 @@ namespace SellerService.Models
 {
     public class GetAllBidDetailsResponse
     {
-        public string ProductId { get; set; }
-        public List<BidDetails> Bids { get; set; }
+        private List<BidDetails> bids = new();
+
+        public List<BidDetails> BidDetails
+        {
+            set { bids = value; }
+            get { return bids; }
+        }
     }
 }

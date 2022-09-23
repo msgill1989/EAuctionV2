@@ -7,7 +7,7 @@ namespace SellerService.Models
 {
     public class BidDetails
     {
-        public string? BidId { get; set; }
+        public string? Id { get; set; }
         public string? BuyerFName { get; set; }
         public string? BuyerLName { get; set; }
         public string? Address { get; set; }

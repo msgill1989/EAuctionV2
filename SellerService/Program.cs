@@ -1,5 +1,6 @@
 
 using EventBus.Messages.Common;
+using EventBus.Messages.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -44,7 +45,7 @@ builder.Services.AddMassTransit(config =>
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
-
+        cfg.ConfigureEndpoints(ctx);
         cfg.ReceiveEndpoint(EventBusConstants.GetBidEndDateforInsertBidQueue, c =>
         {
             c.ConfigureConsumer<BidDateForInsertBidConsumer>(ctx);
@@ -54,6 +55,7 @@ builder.Services.AddMassTransit(config =>
             c.ConfigureConsumer<BidDateForUpdBidAmountConsumer>(ctx);
         });
     });
+    config.AddRequestClient<GetBidDetailsRequestEvent>();
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -73,40 +75,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.MapGet("/GetUsers", [Authorize]() =>
-//{
-//    return new[]
-//    {
-//        "John.Doe",
-//        "Jane.Doe",
-//        "Jewel.Doe",
-//        "Jayden.Doe",
-//    };
-//}).WithName("GetUsers");
-
-
-
-//app.MapGet("/RandomFail", () =>
-//{
-//    var randomValue = new Random().Next(0,2);
-//    //if(randomValue == 1)
-//    {
-//        throw new HttpRequestException("Random Failure");
-//    }
-
-//    //return "SomeData";
-//}).WithName("RandomFail");
-
-//app.MapGet("/RandomTimeout", async () =>
-//{
-//    var randomValue = new Random().Next(0, 2);
-//    //if (randomValue == 1)
-//    {
-//        await Task.Delay(10000);
-//    }
-
-//    //return "SomeData";
-//}).WithName("RandomTimeout");
 
 app.MapControllers();
 app.UseAuthentication();
