@@ -11,5 +11,6 @@ namespace EventBus.Messages.Common
         public const string GetBidEndDateforInsertBidQueue = "getbidenddateforinsertbid-queue";
         public const string GetBidEndDateforUpdBidAmountQueue = "getbidenddateforupdbidamount-queue";
         public const string GetBidDetailsQueue = "getbiddetails-queue";
+        public const string BidsCheckQueue = "bidscheck-queue";
     }
 }

@@ -10,6 +10,7 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using SellerService.Models;
 
 namespace BuyerService.RepositoryLayer
 {
@@ -100,6 +101,22 @@ namespace BuyerService.RepositoryLayer
             }
         }
 
+        public async Task<BidsCheckResponse> IsBidPresent(string? productId)
+        {
+            try
+            {
+                BidsCheckResponse result = new BidsCheckResponse();
+                var response = await _context.Buyers.Find(x => x.ProductId == productId).AnyAsync();
+                result.ProductId = productId;
+                result.BidExists = response;
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         private async Task<BidAndBuyer> GetBidDetails(string? productId, string? bidderEmailId = null)
         {
             try

@@ -19,15 +19,18 @@ namespace SellerService.RepositoryLayer
         private readonly ILogger<SellerRepository> _logger;
         private readonly ISellerContext _context;
         private readonly IRequestClient<GetBidDetailsRequestEvent> _client;
+        private readonly IRequestClient<BidsCheckRequestEvent> _bidsCheckClient;
         private readonly IMapper _mapper;
 
-        public SellerRepository(ILogger<SellerRepository> logger, ISellerContext context, IRequestClient<GetBidDetailsRequestEvent> client, IMapper mapper)
+        public SellerRepository(ILogger<SellerRepository> logger, ISellerContext context, IRequestClient<GetBidDetailsRequestEvent> client, IRequestClient<BidsCheckRequestEvent> bidsCheckClient, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _bidsCheckClient = bidsCheckClient ?? throw new ArgumentNullException(nameof(bidsCheckClient));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+
         public async Task AddProductAsync(ProductAndSeller productObj)
         {
             try
@@ -49,11 +52,18 @@ namespace SellerService.RepositoryLayer
                 var productDetails = await GetProductByProductIdAsync(productId);
 
                 ////Check the Bid end date
-                if (productDetails.BidEndDate < DateTime.Now)
+                if (productDetails.BidEndDate < DateTime.UtcNow)
                     throw new KeyNotFoundException("Product cannot be deleted after the BidEnd date.");
 
-                // //If Any bid is already placed Dont delete the product
-
+                //If Any bid is already placed Dont delete the product
+                BidsCheckRequestEvent eventMessage = new BidsCheckRequestEvent() { ProductId = productId };
+                var response = await _bidsCheckClient.GetResponse<BidsCheckResponseEvent>(eventMessage);
+                if (response.Message.BidExists)
+                {
+                    var errorMsg = string.Format("This product with productId: {0} cannot be deleted because bids are present.", productId);
+                    _logger.LogError(errorMsg);
+                    throw new KeyNotFoundException(errorMsg);
+                }
 
 
                 FilterDefinition<ProductAndSeller> filter = Builders<ProductAndSeller>.Filter.Eq(x => x.Id, productId);

@@ -1,4 +1,5 @@
 ﻿using BuyerService.Models;
+using SellerService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace BuyerService.RepositoryLayer.Interfaces
     {
         Task AddBid(BidAndBuyer bidDetails);
         Task<bool> UpdateBid(string productId, string buyerEmailId, double bidAmount);
-
         Task<AllBidsForSellerResponse> GetAllBidsByProductId(string? productId);
+        Task<BidsCheckResponse> IsBidPresent(string? productId);
     }
 }

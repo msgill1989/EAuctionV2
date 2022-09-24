@@ -43,12 +43,18 @@ builder.Services.AddTransient<IBuyerRepository, BuyerRepository>();
 //Masstransit-RabbitMQ Configuration
 builder.Services.AddMassTransit(config => {
     config.AddConsumer<BidDetailsForSellerConsumer>();
+    config.AddConsumer<BidsCheckConsumer>();
+
     config.UsingRabbitMq((ctx, cfg) => {
     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
     cfg.ConfigureEndpoints(ctx);
     cfg.ReceiveEndpoint(EventBusConstants.GetBidDetailsQueue, c =>
     {
         c.ConfigureConsumer<BidDetailsForSellerConsumer>(ctx);
+    });
+    cfg.ReceiveEndpoint(EventBusConstants.BidsCheckQueue, c =>
+    { 
+        c.ConfigureConsumer<BidsCheckConsumer>(ctx);
     });
 });
     config.AddRequestClient<GetBidDateRequestEvent>();

@@ -59,6 +59,7 @@ builder.Services.AddMassTransit(config =>
         });
     });
     config.AddRequestClient<GetBidDetailsRequestEvent>();
+    config.AddRequestClient<BidsCheckRequestEvent>();
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
