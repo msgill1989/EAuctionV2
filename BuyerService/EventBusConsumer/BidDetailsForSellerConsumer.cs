@@ -33,6 +33,7 @@ namespace BuyerService.EventBusConsumer
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Some error happened in BidDetailsForSellerConsumer");
                 throw;
             }
 

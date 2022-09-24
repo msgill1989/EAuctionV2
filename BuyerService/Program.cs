@@ -11,9 +11,12 @@ using MassTransit;
 using EventBus.Messages.Events;
 using BuyerService.EventBusConsumer;
 using EventBus.Messages.Common;
+using Serilog;
+using Common.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog(Serilogger.Configure);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -62,7 +65,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+} 
 
 app.UseHttpsRedirection();
 

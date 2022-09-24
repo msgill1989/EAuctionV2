@@ -1,4 +1,5 @@
 
+using Common.Logging;
 using EventBus.Messages.Common;
 using EventBus.Messages.Events;
 using MassTransit;
@@ -10,10 +11,12 @@ using SellerService.EventBusConsumer;
 using SellerService.Models;
 using SellerService.RepositoryLayer;
 using SellerService.RepositoryLayer.Interfaces;
+using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog(Serilogger.Configure);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
