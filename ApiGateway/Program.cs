@@ -18,7 +18,6 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
 
 builder.Host.UseSerilog(Serilogger.Configure);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -61,8 +60,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseOcelot().Wait();
-
-app.MapRazorPages();
 
 app.Run();
 

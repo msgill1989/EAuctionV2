@@ -1,5 +1,19 @@
 {
   "Routes": [
+    { 
+      "DownstreamPathTemplate": "/e-auction/api/v1/Validate",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "POST",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7075"
+        }
+      ],
+      "UpstreamPathTemplate": "/User/Validate",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
     {
       "DownstreamPathTemplate": "/e-auction/api/v1/Buyer/place-bid",
       "DownstreamSchema": "https",
