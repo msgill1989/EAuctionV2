@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "..\ApiGateway
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SellerService", "..\SellerService\SellerService.csproj", "{5B2EA0AD-78DA-4B59-8E23-20AC5B9D140B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{71472A91-D1F3-4C9D-B902-660783499CEA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{164C7F18-B1FB-4528-955F-274720C89A96}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBus.Messages", "..\BuildingBlocksBlocks\EventBus.Messages\EventBus.Messages.csproj", "{5986DD36-1C3C-4189-A4EB-084FDE280228}"

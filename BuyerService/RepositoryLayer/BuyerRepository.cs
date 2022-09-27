@@ -20,7 +20,7 @@ namespace BuyerService.RepositoryLayer
         private readonly IBuyerContext _context;
         //private readonly IPublishEndpoint _publishEndpoint;
         private readonly IRequestClient<GetBidDateRequestEvent> _client;
-        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context, IRequestClient<GetBidDateRequestEvent> client) //, IPublishEndpoint publishEndpoint)
+        public BuyerRepository(ILogger<BuyerRepository> logger, IBuyerContext context, IRequestClient<GetBidDateRequestEvent> client)
         {
             _logger = logger;
             _context = context;
@@ -33,7 +33,7 @@ namespace BuyerService.RepositoryLayer
             {
                 //If bid is placed after bid end date. Throw an exception
                 GetBidDateRequestEvent eventMessage = new GetBidDateRequestEvent() { ProductId = bidDetails.ProductId };
-                //var a = await _publishEndpoint.Publish(eventMessage);
+
                 var result = await _client.GetResponse<GetBidDateResponseEvent>(eventMessage);
                 if (DateTime.Now > result.Message.BidEndDate)
                     throw new KeyNotFoundException("The Bid cannot be placed after the bid end date.");
