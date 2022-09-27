@@ -10,7 +10,7 @@ namespace AuthServer.Controller
 {
     [Route("/e-auction/api/v1/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class SellerController : ControllerBase
     {
         private readonly ISellerRepository _sellerRepository;

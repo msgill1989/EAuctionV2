@@ -92,6 +92,7 @@ namespace SellerService.RepositoryLayer
                 ShowBidsResponse getAllBidsResponse = new ShowBidsResponse();
                 var productDetails = await GetProductByProductIdAsync(productId);
 
+                getAllBidsResponse.ProductId = productDetails.Id;
                 getAllBidsResponse.ProductName = productDetails.ProductName;
                 getAllBidsResponse.ShortDescription = productDetails.ProductShortDescription;
                 getAllBidsResponse.DetailedDescription = productDetails.ProductDetailedDescription;
